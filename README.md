@@ -6,7 +6,7 @@ Using [emulambda](https://github.com/fugue/emulambda) you can try this:
 
 ```
 export S3_BUCKET=scanner-upload
-echo '{"file": "scan_2018-01-20_155119.tar.gz"}' | emulambda handler.handler - -v
+echo '{"Records":[{"s3":{"bucket":{"name":"scanner-upload"},"object":{"key":"scan_2018-01-20_155119.tar.gz"}}}]}' | emulambda handler.handler - -v
 ```
 
 # Setup of lambda

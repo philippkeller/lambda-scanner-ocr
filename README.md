@@ -9,6 +9,11 @@ export S3_BUCKET=scanner-upload
 echo '{"file": "scan_2018-01-20_155119.tar.gz"}' | emulambda handler.handler - -v
 ```
 
+# Setup of lambda
+
+- add env variable: `S3_BUCKET=scanner-upload`
+- put `Timeout` to 5 minutes
+
 # Deploying
 
 ```

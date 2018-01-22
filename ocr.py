@@ -7,7 +7,7 @@ import subprocess
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 LIB_DIR = os.path.join(SCRIPT_DIR, 'lib')
 DOWNLOAD_FILE = 'scan.tar.gz'
-TMP_DIR = ''
+TMP_DIR = '/tmp/'
 
 s3 = boto3.client('s3')
 
@@ -25,4 +25,4 @@ def ocr(src_bucketname, src_filename, dest_bucketname):
 		'pdf'], cwd=SCRIPT_DIR, env=env)
 	print(out)
 	for f in ['filenames.txt', DOWNLOAD_FILE] + tar.getnames():
-		os.remove("{}/{}".format(TMP_DIR, f))
+		os.remove("{}/{}".format(TMP_DIR, f)/tmp/)

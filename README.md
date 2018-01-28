@@ -25,17 +25,18 @@ Now, create an IAM role which allows to read/write from source bucket (after rea
 	  "Statement": [
 	    {
 	      "Effect": "Allow",
-	      "Action": ["s3:ListBucket"],
-	      "Resource": ["arn:aws:s3:::<source-bucket>"]
+	      "Action": [
+	        "s3:GetObject",
+	        "s3:DeleteObject"
+	      ],
+	      "Resource": ["arn:aws:s3:::<source-bucket>/*"]
 	    },
 	    {
 	      "Effect": "Allow",
 	      "Action": [
-	        "s3:PutObject",
-	        "s3:GetObject",
-	        "s3:DeleteObject"
+	        "s3:PutObject"
 	      ],
-	      "Resource": ["arn:aws:s3:::<source-bucket>", "arn:aws:s3:::<dest-bucket>"]
+	      "Resource": ["arn:aws:s3:::<dest-bucket>/*"]
 	    }
 	  ]
 	}
@@ -58,7 +59,7 @@ Set up a lambda function with
 Then, in the lambda function set
 
 - Handler: `handler.handler`
-- env variable: `S3_BUCKET=<bucket-name>` Destination bucket name where lambda will upload the pdf
+- env variable: `S3_DEST_BUCKET=<bucket-name>` Destination bucket name where lambda will upload the pdf
 - `Timeout`: 5 minutes
 - Memory: I chose 2048MB. The more memory you take, the faster the execution time (see also [the official doc](https://docs.aws.amazon.com/lambda/latest/dg/resource-model.html)). 128MB is not enough. It will lead to out of memory exceptions.
 

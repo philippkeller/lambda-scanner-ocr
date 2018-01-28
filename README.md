@@ -13,7 +13,7 @@ Both buckets should be in the same region as your lambda function.
 
 ## IAM role
 
-Now, create an IAM role which allows to read/write from both source and destination bucket:
+Now, create an IAM role which allows to read/write from source bucket (after reading the non-OCR source it will delete the file) and write to destination bucket:
 
 1. navigate to IAM
 2. create a **Policy**, switch to JSON tab
@@ -26,7 +26,7 @@ Now, create an IAM role which allows to read/write from both source and destinat
 	    {
 	      "Effect": "Allow",
 	      "Action": ["s3:ListBucket"],
-	      "Resource": ["arn:aws:s3:::<source-bucket>", "arn:aws:s3:::<dest-bucket>"]
+	      "Resource": ["arn:aws:s3:::<source-bucket>"]
 	    },
 	    {
 	      "Effect": "Allow",
@@ -58,14 +58,16 @@ Set up a lambda function with
 Then, in the lambda function set
 
 - Handler: `handler.handler`
-- env variable: `S3_BUCKET=<bucket-name>` # bucket name where lambda will upload the pdf
+- env variable: `S3_BUCKET=<bucket-name>` Destination bucket name where lambda will upload the pdf
 - `Timeout`: 5 minutes
-- Execution role: tbd
+- Memory: I chose 2048MB. The more memory you take, the faster the execution time (see also [the official doc](https://docs.aws.amazon.com/lambda/latest/dg/resource-model.html)). 128MB is not enough. It will lead to out of memory exceptions.
 
-Then, populate the function with the prebuilt binary (To build this see below under `Build tesseract binaries`)
+Then, upload the zip file to lambda:
 
-- Code entry type: `upload from S3`
-- `S3 link URL`: `s3://hansaplast-share/ocr-lambda.zip` (take the prebuilt lambda from this repo. 
+- download the ocr-lambda.zip from the releases section of github
+- upload the zip file onto a s3 bucket of yours which is in the same region as your lambda function
+- then, choose Code entry type: `upload from S3`
+- `S3 link URL`: the s3 link of the file you just uploaded, this has the form `https://s3.<region>.amazonaws.com/<bucket>/ocr-lambda.zip`
 
 # Test
 

@@ -104,7 +104,7 @@ From the `Add triggers` menu on the left choose `S3`, then in `Configure trigger
 Using [emulambda](https://github.com/fugue/emulambda) you can try this:
 
 ```
-export S3_BUCKET=scanner-upload
+export S3_DEST_BUCKET=hansaplast-documents
 echo '{"Records":[{"s3":{"bucket":{"name":"scanner-upload"},"object":{"key":"scan_2018-01-20_155119.tar.gz"}}}]}' | emulambda handler.handler - -v
 ```
 
@@ -158,6 +158,12 @@ cd tessdata
 wget https://github.com/tesseract-ocr/tessdata/raw/master/osd.traineddata
 cd ~
 zip -r tesseract-lambda.zip tesseract-lambda
+```
+
+# Install python dependencies
+
+```
+pip3 install -r requirements.txt -t $(pwd)
 ```
 
 # Build lambda function

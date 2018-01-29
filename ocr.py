@@ -34,11 +34,12 @@ def ocr(src_bucketname, src_filename, dest_bucketname, dest_filename, empty_page
             'pdf'], cwd=SCRIPT_DIR, env=env)
         for p in PdfReader("{}/{}".format(TMP_DIR, "partial.pdf")).pages:
             try:
-                if int(p.Contents['/Length']) > empty_page_threshold:
-                    output.addpage(p)
+                if int(p.Contents['/Length']) < empty_page_threshold:
+                    continue
             except:
-                # e.g. Contents is None, or Contents as no key '/Length' etc
+                # if in doubt add the page
                 pass
+            output.addpage(p)
     output.write('{}/output.pdf'.format(TMP_DIR))
     s3.upload_file("{}/output.pdf".format(TMP_DIR), dest_bucketname, dest_filename)
     for f in ['partial.pdf', 'output.pdf', DOWNLOAD_FILE] + tar.getnames():

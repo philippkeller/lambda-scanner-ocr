@@ -60,6 +60,7 @@ Then, in the lambda function set
 
 - Handler: `handler.handler`
 - env variable: `S3_DEST_BUCKET=<bucket-name>` Destination bucket name where lambda will upload the pdf
+- env variable: `EMPTY_PAGE_THRESHOLD=200` if tesseract finds less than 200 characters on a page it's likely to be empty and will be removed (assumes you're using a duplex scanner). If you want to disable empty page removal, just put this to 0
 - `Timeout`: 5 minutes
 - Memory: I chose 2048MB. The more memory you take, the faster the execution time (see also [the official doc](https://docs.aws.amazon.com/lambda/latest/dg/resource-model.html)). 128MB is not enough. It will lead to out of memory exceptions.
 
@@ -139,8 +140,6 @@ cd tesseract-3.04.01/
 make
 sudo make install
 cd /usr/local/share/tessdata/
-sudo wget https://github.com/tesseract-ocr/tessdata/raw/3.04.00/eng.traineddata
-sudo wget https://github.com/tesseract-ocr/tessdata/raw/3.04.00/deu.traineddata
 export TESSDATA_PREFIX=/usr/local/share/
 cd ~
 mkdir tesseract-lambda
@@ -155,6 +154,8 @@ cp /usr/lib64/libz.so .
 cd ..
 cp -r /usr/local/share/tessdata .
 cd tessdata
+wget https://github.com/tesseract-ocr/tessdata_fast/raw/master/eng.traineddata
+wget https://github.com/tesseract-ocr/tessdata_fast/raw/master/deu.traineddata
 wget https://github.com/tesseract-ocr/tessdata/raw/master/osd.traineddata
 cd ~
 zip -r tesseract-lambda.zip tesseract-lambda
@@ -173,7 +174,7 @@ Unzip `tesseract-lambda.zip` you just built into the root of this repo
 Then upload it to s3:
 
 ```
-zip -r -q ocr-lambda.zip . -x deploy.sh -x ocr-lambda.zip -x README.md
+zip -r -q ocr-lambda.zip . -x deploy.sh -x ocr-lambda.zip -x README.md -x requirements.txt -x LICENSE
 aws s3 cp ocr-lambda.zip s3://<s3-bucket>/
 ```
 

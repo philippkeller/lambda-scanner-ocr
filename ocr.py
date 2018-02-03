@@ -28,12 +28,12 @@ def ocr(src_bucketname, src_filename, dest_bucketname, dest_filename, empty_page
 
     output = PdfWriter()
     for filename in tar.getnames():
-        out = subprocess.check_output(['./tesseract', 
-            '-l',
-            language,
+        cmd = ['./tesseract', '-l', language,
             '{}/{}'.format(TMP_DIR, filename),
             '{}/partial'.format(TMP_DIR),
-            'pdf'], cwd=SCRIPT_DIR, env=env)
+            'pdf']
+        out = subprocess.check_output(cmd, cwd=SCRIPT_DIR, env=env, stderr=subprocess.STDOUT)
+        print(out)
         for p in PdfReader("{}/{}".format(TMP_DIR, "partial.pdf")).pages:
             try:
                 if int(p.Contents['/Length']) < empty_page_threshold:

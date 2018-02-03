@@ -100,86 +100,17 @@ From the `Add triggers` menu on the left choose `S3`, then in `Configure trigger
 - `Event tpye`: `Object Created (All)`
 - `Prefix` and `Suffix` you can leave empty
 
-# Local testing
-
-Using [emulambda](https://github.com/fugue/emulambda) you can try this:
-
-```
-export S3_DEST_BUCKET=hansaplast-documents
-echo '{"Records":[{"s3":{"bucket":{"name":"scanner-upload"},"object":{"key":"scan_2018-01-20_155119.tar.gz"}}}]}' | emulambda handler.handler - -v
-```
-
-# Build tesseract binaries
-
-This was mainly taken from  [this post](https://stackoverflow.com/questions/33588262/tesseract-ocr-on-aws-lambda-via-virtualenv) with minor modifications.
-
-Tested, 2018-01-22 on an amazon linux ami 4.9.76-3.78.amzn1.x86_64:
-
-```bash
-sudo yum install gcc gcc-c++ make -y
-sudo yum install autoconf aclocal automake -y
-sudo yum install libtool -y
-sudo yum install libjpeg-devel libpng-devel libpng-devel libtiff-devel zlib-devel -y
-cd ~
-mkdir leptonica
-cd leptonica/
-wget http://www.leptonica.com/source/leptonica-1.73.tar.gz
-tar -xzvf leptonica-1.73.tar.gz
-cd leptonica-1.73
-./configure
-make
-sudo make install
-cd ~
-mkdir tesseract
-cd tesseract/
-wget https://github.com/tesseract-ocr/tesseract/archive/3.04.01.tar.gz
-tar -xzvf 3.04.01.tar.gz
-cd tesseract-3.04.01/
-./autogen.sh
-./configure
-make
-sudo make install
-cd /usr/local/share/tessdata/
-export TESSDATA_PREFIX=/usr/local/share/
-cd ~
-mkdir tesseract-lambda
-cd tesseract-lambda/
-cp /usr/local/bin/tesseract .
-mkdir lib
-cd lib/
-cp /usr/local/lib/libtesseract.so.3 .
-cp /usr/local/lib/liblept.so.5 .
-cp /usr/lib64/libpng12.so.0 .
-cp /usr/lib64/libz.so .
-cd ..
-cp -r /usr/local/share/tessdata .
-cd tessdata
-wget https://github.com/tesseract-ocr/tessdata/raw/3.04.00/deu.traineddata
-wget https://github.com/tesseract-ocr/tessdata/raw/3.04.00/eng.traineddata
-wget https://github.com/tesseract-ocr/tessdata/raw/master/osd.traineddata
-cd ~
-zip -r tesseract-lambda.zip tesseract-lambda
-```
-
-# Install python dependencies
-
-```
-pip3 install -r requirements.txt -t $(pwd)
-```
 
 # Build lambda function
 
-Unzip `tesseract-lambda.zip` you just built into the root of this repo
-
-Then upload it to s3:
-
 ```
-zip -r -q ocr-lambda.zip . -x deploy.sh -x ocr-lambda.zip -x README.md -x requirements.txt -x LICENSE
+cd root/of/repo
+pip3 install -r requirements.txt -t $(pwd)
+zip -r ocr-lambda.zip . -x '/.git*' -x '/doc*' -x ocr-lambda.zip -x README.md -x requirements.txt -x LICENSE
 aws s3 cp ocr-lambda.zip s3://<s3-bucket>/
-```
-
-# Refresh lambda function
-
-```
 aws lambda update-function-code --function-name <lamba-nam> --s3-bucket <s3-bucket> --s3-key ocr-lambda.zip
 ```
+
+# Further docs
+
+- [guild tesseract binaries](doc/compile_tesseract.md)

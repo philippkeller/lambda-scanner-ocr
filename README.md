@@ -61,6 +61,7 @@ Then, in the lambda function set
 - Handler: `handler.handler`
 - env variable: `S3_DEST_BUCKET=<bucket-name>` Destination bucket name where lambda will upload the pdf
 - env variable: `EMPTY_PAGE_THRESHOLD=200` if tesseract finds less than 200 characters on a page it's --- from experience --- likely to be empty and will be removed (assumes you're using a duplex scanner). If you want to disable empty page removal, just put this to 0
+- optional: env variable: `TESSERACT_LANG`. Currently supported are `eng` english and `deu` deutsch. Default is english. If you want to add another language, see below
 - `Timeout`: 5 minutes
 - Memory: I chose 2048MB. The more memory you take, the faster the execution time (see also [the official doc](https://docs.aws.amazon.com/lambda/latest/dg/resource-model.html)). 128MB is not enough. It will lead to out of memory exceptions.
 
@@ -115,3 +116,4 @@ aws lambda update-function-code --function-name <lamba-name> --s3-bucket <s3-buc
 # Further docs
 
 - [guild tesseract binaries](doc/compile_tesseract.md)
+- adding another language: git clone this repo, then cd into tessdata and load one of the files from within https://github.com/tesseract-ocr/tessdata_fast/raw/master/ into that dir. Then follow the instructions at "Build lambda function". Don't forget to set the `TESSERACT_LANG` env variable.

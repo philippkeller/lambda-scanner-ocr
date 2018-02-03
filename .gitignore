@@ -1,3 +1,4 @@
 ocr-lambda.zip
 __pycache__
 pdfrw*
+tessdata/deu.traineddata

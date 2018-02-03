@@ -17,7 +17,7 @@ s3 = boto3.client('s3')
 # - try tessxeract 4.0..?
 # - use tesseract_fast to lower the size (4MB vs 40MB!)
 # - try if w/o deu package it makes any difference..
-def ocr(src_bucketname, src_filename, dest_bucketname, dest_filename, empty_page_threshold):
+def ocr(src_bucketname, src_filename, dest_bucketname, dest_filename, empty_page_threshold, language='eng'):
     if src_bucketname == dest_bucketname:
         raise Exception('cannot store resulting pdf in same bucket as source files as it would result in an endless loop')
     s3.download_file(src_bucketname, src_filename, "{}/{}".format(TMP_DIR, DOWNLOAD_FILE))
@@ -29,6 +29,8 @@ def ocr(src_bucketname, src_filename, dest_bucketname, dest_filename, empty_page
     output = PdfWriter()
     for filename in tar.getnames():
         out = subprocess.check_output(['./tesseract', 
+            '-l',
+            language,
             '{}/{}'.format(TMP_DIR, filename),
             '{}/partial'.format(TMP_DIR),
             'pdf'], cwd=SCRIPT_DIR, env=env)

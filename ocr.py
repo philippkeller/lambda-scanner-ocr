@@ -1,6 +1,6 @@
 import boto3
 import tarfile
-import os
+import os, sys
 import subprocess
 from pdfrw import PdfReader, PdfWriter
 
@@ -32,7 +32,12 @@ def ocr(src_bucketname, src_filename, dest_bucketname, dest_filename, empty_page
             '{}/{}'.format(TMP_DIR, filename),
             '{}/partial'.format(TMP_DIR),
             'pdf']
-        out = subprocess.check_output(cmd, cwd=SCRIPT_DIR, env=env, stderr=subprocess.STDOUT)
+        try:
+            out = subprocess.check_output(cmd, cwd=SCRIPT_DIR, env=env, stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as e:
+            print('tesseract call failed, here\'s the output so far:')
+            print(e.output)
+            sys.exit(1)
         print(out)
         for p in PdfReader("{}/{}".format(TMP_DIR, "partial.pdf")).pages:
             try:

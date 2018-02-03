@@ -49,6 +49,7 @@ cp /usr/local/lib/libtesseract.so.4 lib/
 cp /usr/local/lib/liblept.so.5 lib/
 cp /usr/lib64/libjpeg.so.62 lib/
 cp /usr/lib64/libwebp.so.4 lib/
+cp /usr/lib64/libstdc++.so.6 lib/
 mkdir tessdata
 cd tessdata
 wget https://github.com/tesseract-ocr/tessdata_fast/raw/master/osd.traineddata

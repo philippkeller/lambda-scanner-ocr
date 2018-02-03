@@ -24,7 +24,7 @@ def ocr(src_bucketname, src_filename, dest_bucketname, dest_filename, empty_page
     tar = tarfile.open("{}/{}".format(TMP_DIR, DOWNLOAD_FILE))
     tar.extractall(path=TMP_DIR)
     env = os.environ.copy()
-    env.update(dict(LD_LIBRARY_PATH=LIB_DIR, TESSDATA_PREFIX=SCRIPT_DIR))
+    env.update(dict(LD_LIBRARY_PATH=LIB_DIR, TESSDATA_PREFIX="{}/tessdata".format(SCRIPT_DIR)))
 
     output = PdfWriter()
     for filename in tar.getnames():

@@ -96,6 +96,7 @@ Upload tar.gz with 1 or more pnm files into `<bucket-name>`. then add new test h
 
 From the `Add triggers` menu on the left choose `S3`, then in `Configure trigger` dialogue:
 
+- do a reload of the page (otherwise, you'll be in "test mode" and cannot save the trigger.. yeah, that's a aws bug..)
 - `Bucket`: the bucket where the lambda function should listen to
 - `Event tpye`: `Object Created (All)`
 - `Prefix` and `Suffix` you can leave empty
@@ -108,7 +109,7 @@ cd root/of/repo
 pip3 install -r requirements.txt -t $(pwd)
 zip -r ocr-lambda.zip . -x '/.git*' -x '/doc*' -x ocr-lambda.zip -x README.md -x requirements.txt -x LICENSE
 aws s3 cp ocr-lambda.zip s3://<s3-bucket>/
-aws lambda update-function-code --function-name <lamba-nam> --s3-bucket <s3-bucket> --s3-key ocr-lambda.zip
+aws lambda update-function-code --function-name <lamba-name> --s3-bucket <s3-bucket> --s3-key ocr-lambda.zip
 ```
 
 # Further docs

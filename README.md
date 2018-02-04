@@ -37,7 +37,16 @@ Now, create an IAM role which allows to read/write from source bucket (after rea
 	        "s3:PutObject"
 	      ],
 	      "Resource": ["arn:aws:s3:::<dest-bucket>/*"]
-	    }
+	    },
+		{
+		  "Effect": "Allow",
+		  "Action": [
+		    "logs:CreateLogGroup",
+		    "logs:CreateLogStream",
+		    "logs:PutLogEvents"
+		  ],
+		  "Resource": "arn:aws:logs:*:*:*"
+		}
 	  ]
 	}
 	```

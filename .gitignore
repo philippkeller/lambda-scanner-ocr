@@ -1,4 +1,10 @@
 ocr-lambda.zip
 __pycache__
-pdfrw*
 tessdata/deu.traineddata
+
+# virtualenv
+bin
+include
+lib/python3.5
+pip-selfcheck.json
+share

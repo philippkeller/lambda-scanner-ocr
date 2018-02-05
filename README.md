@@ -116,7 +116,8 @@ From the `Add triggers` menu on the left choose `S3`, then in `Configure trigger
 
 ```
 cd root/of/repo
-pip3 install -r requirements.txt -t $(pwd)
+virtualenv --python=python3.6 .
+pip install -r requirements.txt
 zip -r ocr-lambda.zip . -x '/.git*' -x '/doc*' -x ocr-lambda.zip -x README.md -x requirements.txt -x LICENSE
 aws s3 cp ocr-lambda.zip s3://<s3-bucket>/
 aws lambda update-function-code --function-name <lamba-name> --s3-bucket <s3-bucket> --s3-key ocr-lambda.zip

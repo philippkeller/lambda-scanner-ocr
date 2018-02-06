@@ -1,6 +1,7 @@
 ocr-lambda.zip
 __pycache__
 tessdata/deu.traineddata
+client_secret.json
 
 # virtualenv
 bin

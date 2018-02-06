@@ -65,7 +65,7 @@ def upload_gdrive(file_src, file_dest, client_id, client_secret, refresh_token, 
         file_metadata['parents'] = [folder]
 
     media = MediaFileUpload(file_src,
-                            mimetype='image/jpeg')
+                            mimetype='application/pdf')
     file = service.files().create(body=file_metadata,
                                   media_body=media,
                                   fields='id').execute()

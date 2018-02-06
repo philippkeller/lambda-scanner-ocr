@@ -45,7 +45,6 @@ def ocr(tar_gz_filename, empty_page_threshold, language='eng'):
             output.addpage(p)
     output.write('{}/output.pdf'.format(TMP_DIR))
 
-    s3.delete_object(Bucket=src_bucketname, Key=src_filename)
     for f in ['partial.pdf', DOWNLOAD_FILE] + tar.getnames():
         os.remove("{}/{}".format(TMP_DIR, f))
     return '{}/output.pdf'.format(TMP_DIR)

@@ -4,25 +4,20 @@ def handler(event, context):
     download tar.gz, do ocr and upload it to configured cloud service
     (currently AWS S3 or Google Drive)
     """
-    import ocr
-    
-    if os.environ['UPLOAD_TYPE'] == 'gdrive':
-        upload_type = 'gdrive'
-        folder = os.environ.get('GDRIVE_FOLDER', None)
-        client_id = os.environ['GDRIVE_CLIENT_ID']
-        client_secret =  os.environ['GDRIVE_CLIENT_SECRET']
-        refresh_token = os.environ['GDRIVE_REFRESH_TOKEN']
-        upload_params = (client_id, client_secret, refresh_token, folder)
-    elif os.environ['UPLOAD_TYPE'] == 's3':
-        bucket = os.environ['S3_BUCKET']
-        upload_params = (bucket)
+
+    upload_type = os.environ.get('UPLOAD_TYPE', None)
+    if upload_type == 'gdrive':
+        for k in ['GDRIVE_CLIENT_ID', 'GDRIVE_CLIENT_SECRET', 'GDRIVE_REFRESH_TOKEN']:
+            assert k in os.environ, "missing {} in environment vars".format(k)
+    elif upload_type == 's3':
+        assert 'S3_BUCKET' in os.environ
     else:
         raise Exception('unknown upload type {}'.format(os.environ['UPLOAD_TYPE']))
 
     empty_page_threshold = int(os.environ.get('EMPTY_PAGE_THRESHOLD', 200))
     language = os.environ.get('TESSERACT_LANG', 'eng')
 
-    import boto3
+    import boto3, ocr
     s3 = boto3.client('s3')
     for record in event['Records']:
         src_bucket = record['s3']['bucket']['name']
@@ -33,9 +28,16 @@ def handler(event, context):
 
         dest_filename = src_file.split('.')[0] + '.pdf'
         if upload_type == 's3':
-            s3.upload_file(pdf_file, upload_params[0], dest_filename)
+            bucket = os.environ['S3_BUCKET']
+            s3.upload_file(pdf_file, bucket, dest_filename)
         elif upload_type == 'gdrive':
-            upload_gdrive(pdf_file, dest_filename, *upload_params)
+            folder = os.environ.get('GDRIVE_FOLDER', None)
+            client_id = os.environ['GDRIVE_CLIENT_ID']
+            client_secret =  os.environ['GDRIVE_CLIENT_SECRET']
+            refresh_token = os.environ['GDRIVE_REFRESH_TOKEN']
+            upload_gdrive(pdf_file, dest_filename, client_id, client_secret, refresh_token, folder)
+        s3.delete_object(Bucket=src_bucket, Key=src_file)
+        os.remove(pdf_file)
 
         
 def upload_gdrive(file_src, file_dest, client_id, client_secret, refresh_token, folder=None):

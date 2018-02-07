@@ -1,5 +1,6 @@
 ocr-lambda.zip
 __pycache__
+*.pyc
 tessdata/deu.traineddata
 client_secret.json
 

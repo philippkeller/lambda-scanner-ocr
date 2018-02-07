@@ -108,10 +108,12 @@ From the `Add triggers` menu on the left choose `S3`, then in `Configure trigger
 cd root/of/repo
 virtualenv --python=python3.6 .
 pip install -r requirements.txt
+rm -f ocr-lambda.zip
 git archive -o ocr-lambda.zip HEAD
 cd lib/python3.6/site-packages
 zip -r ../../../ocr-lambda.zip .
 cd -
+zip ocr-lambda.zip tessdata/*.traineddata # if you use additional languages
 aws s3 cp ocr-lambda.zip s3://<s3-bucket>/
 aws lambda update-function-code --function-name <lamba-name> --s3-bucket <s3-bucket> --s3-key ocr-lambda.zip
 ```

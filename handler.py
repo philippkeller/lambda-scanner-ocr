@@ -56,7 +56,7 @@ def upload_gdrive(file_src, file_dest, client_id, client_secret, refresh_token, 
         'scanner-ocr')
 
     http = credentials.authorize(httplib2.Http())
-    service = discovery.build('drive', 'v3', http=http)
+    service = discovery.build('drive', 'v3', http=http, cache_discovery=False)
 
     file_metadata = {
         'name': file_dest,

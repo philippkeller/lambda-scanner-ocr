@@ -71,7 +71,7 @@ Now, upload the zip file to lambda:
 - then, choose Code entry type: `upload from S3`
 - `S3 link URL`: the s3 link of the file you just uploaded, this has the form `https://s3.<region>.amazonaws.com/<bucket>/ocr-lambda.zip`
 
-# Test
+## Test
 
 Upload tar.gz with 1 or more pnm files into `<bucket-name>`. then add new test handler with this:
 

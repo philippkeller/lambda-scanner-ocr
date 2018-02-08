@@ -11,6 +11,8 @@ def handler(event, context):
             assert k in os.environ, "missing {} in environment vars".format(k)
     elif upload_type == 's3':
         assert 'S3_BUCKET' in os.environ
+    elif upload_type == 'discard':
+        pass
     else:
         raise Exception('unknown upload type {}'.format(os.environ['UPLOAD_TYPE']))
 
@@ -36,9 +38,11 @@ def handler(event, context):
             client_secret =  os.environ['GDRIVE_CLIENT_SECRET']
             refresh_token = os.environ['GDRIVE_REFRESH_TOKEN']
             upload_gdrive(pdf_file, dest_filename, client_id, client_secret, refresh_token, folder)
+        elif upload_type == 'discard':
+            print('all fine, discarding file, but not deleting source file')
+            return
         s3.delete_object(Bucket=src_bucket, Key=src_file)
         os.remove(pdf_file)
-
         
 def upload_gdrive(file_src, file_dest, client_id, client_secret, refresh_token, folder=None):
     import httplib2

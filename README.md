@@ -49,7 +49,7 @@ You have two options for storing your OCRed PDFs:
 
 1. **Google drive**:
    - You need to first create a google api in the developers console, and turn on the google drive api [as described here](https://developers.google.com/drive/v3/web/quickstart/python#step_1_turn_on_the_api_name).
-   - Copy the resulting `client_secret.json` into this projects root, then `pip install oauth2client` and then run `python get_drive_credentials`. Now, copy-paste the resulting values into the environment variables. This grants your lambda function to create files in your google drive and to access the files it created (which it won't need). See [here](https://developers.google.com/drive/v2/web/about-auth) for more details about the right you're granting.  
+   - Copy the resulting `client_secret.json` into this projects root, then `pip install oauth2client` and then run `python scripts/get_drive_credentials`. Now, copy-paste the resulting values into the environment variables. This grants your lambda function to create files in your google drive and to access the files it created (which it won't need). See [here](https://developers.google.com/drive/v2/web/about-auth) for more details about the right you're granting.  
    - Optional: If you wish your PDFs to be stored in a specific folder, go to that folder in your google drive, copy the part in the url after `/folders/` and put that into an additional environment variabled named `GDRIVE_FOLDER`
 2. **S3**: This is a lot easier as you'll only need to create an s3 bucket (in the same region as your lambda function) and add these lines to your policy (replace `<dest-bucket>`):
    ```
@@ -108,14 +108,9 @@ From the `Add triggers` menu on the left choose `S3`, then in `Configure trigger
 cd root/of/repo
 virtualenv --python=python3.6 .
 pip install -r requirements.txt
-rm -f ocr-lambda.zip
-git archive -o ocr-lambda.zip HEAD
-cd lib/python3.6/site-packages
-zip -r ../../../ocr-lambda.zip .
-cd -
-zip ocr-lambda.zip tessdata/*.traineddata # if you use additional languages
+scripts/zip.sh
 aws s3 cp ocr-lambda.zip s3://<s3-bucket>/
-aws lambda update-function-code --function-name <lamba-name> --s3-bucket <s3-bucket> --s3-key ocr-lambda.zip
+aws lambda update-function-code --function-name <lambda-name> --s3-bucket <s3-bucket> --s3-key ocr-lambda.zip
 ```
 
 # Further docs

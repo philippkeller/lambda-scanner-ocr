@@ -25,6 +25,7 @@ def ocr(tar_gz_filename, empty_page_threshold, language='eng'):
     output = PdfWriter()
     for filename in tar.getnames():
         cmd = ['./tesseract', '-l', language,
+            '-c', 'min_orientation_margin=0', # don't leave out characters close to border
             '{}/{}'.format(TMP_DIR, filename),
             '{}/partial'.format(TMP_DIR),
             'pdf']

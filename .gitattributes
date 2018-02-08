@@ -2,4 +2,5 @@
 .gitattributes export-ignore
 requirements.txt export-ignore
 doc export-ignore
+scripts export-ignore
 README.md export-ignore

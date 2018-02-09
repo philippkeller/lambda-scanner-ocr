@@ -1,8 +1,10 @@
-Lambda function to convert a tar-gzipped set of pnm files into one OCRed PDF
+Lambda function to convert a tar-gzipped set of pnm files into one OCRed PDF and upload it go Google Drive.
 
-# Install
+Designed to use it as processing step after scanning. See [this very complete blogpost](http://howto.philippkeller.com/2018/02/08/Scan-with-raspberry-pi-convert-with-aws-to-searchable-PDF/) how to use it together with a scanner via raspberry pi.
 
-## Prerequisits
+# Installation
+
+## Prerequisites
 
 Before you start, you'll need..
 
@@ -115,5 +117,5 @@ aws lambda update-function-code --function-name <lambda-name> --s3-bucket <s3-bu
 
 # Further docs
 
-- [guild tesseract binaries](doc/compile_tesseract.md)
-- adding another language: git clone this repo, then cd into tessdata and load one of the files from within https://github.com/tesseract-ocr/tessdata_fast/raw/master/ into that dir. Then follow the instructions at "Build lambda function". Don't forget to set the `TESSERACT_LANG` env variable.
+- [Build tesseract4 binaries](doc/compile_tesseract.md)
+- Adding another language: git clone this repo, then cd into `tessdata` and load one of the files from [tessdata_fast](https://github.com/tesseract-ocr/tessdata_fast/raw/master/) into that dir. Then follow the instructions at ["Build lambda function"](#build-lambda-function). Don't forget to set the `TESSERACT_LANG` env variable.
